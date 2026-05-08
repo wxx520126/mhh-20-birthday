@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="一封可以写文字、贴照片的生日信网页骨架">
+  <title>给她的一封信</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="backdrop" aria-hidden="true">
+    <span class="orb orb-a"></span>
+    <span class="orb orb-b"></span>
+    <span class="orb orb-c"></span>
+  </div>
+
+  <main class="page-shell">
+    <section class="cover">
+      <p class="eyebrow">生日礼物网页骨架</p>
+      <h1>给她的一封信</h1>
+      <p class="lead">
+        这是一个信纸风格的网页底稿。你可以直接写字、贴照片，后面再慢慢把内容换成真正想说的话。
+      </p>
+      <div class="cover-tags">
+        <span>文字可编辑</span>
+        <span>照片可上传</span>
+        <span>适合 GitHub Pages</span>
+      </div>
+    </section>
+
+    <section class="workspace">
+      <article class="letter-card">
+        <div class="letter-top">
+          <div>
+            <span class="field-label">To</span>
+            <div class="editable line title" contenteditable="true" data-placeholder="写收件人，比如：亲爱的你"></div>
+          </div>
+          <div>
+            <span class="field-label">Date</span>
+            <div class="editable line meta" contenteditable="true" data-placeholder="写日期，比如：2026.05.08"></div>
+          </div>
+        </div>
+
+        <div class="seal-row">
+          <div class="seal">Open when you miss me</div>
+          <p>把这封信写成你们自己的版本：先有页面，再慢慢填内容。</p>
+        </div>
+
+        <section class="block">
+          <div class="block-head">
+            <h2>正文</h2>
+            <span>支持段落、换行、复制粘贴</span>
+          </div>
+          <div
+            id="letterBody"
+            class="editable body"
+            contenteditable="true"
+            data-placeholder="在这里写信。比如：今天想把这封信送给你，先从一句最想说的话开始。"
+          ></div>
+        </section>
+
+        <section class="block">
+          <div class="block-head">
+            <h2>照片墙</h2>
+            <span>支持上传、拖拽、粘贴图片</span>
+          </div>
+
+          <div class="photo-actions">
+            <label class="upload-btn" for="photoInput">
+              选择照片
+              <input id="photoInput" type="file" accept="image/*" multiple>
+            </label>
+            <button id="clearPhotos" type="button" class="ghost-btn">清空照片</button>
+          </div>
+
+          <div id="dropzone" class="dropzone">
+            把照片拖到这里，或者直接在页面里粘贴图片。
+          </div>
+
+          <div id="photoGrid" class="photo-grid" aria-live="polite"></div>
+        </section>
+
+        <section class="signature-row">
+          <div class="editable signature" contenteditable="true" data-placeholder="写下署名，比如：永远爱你的..."></div>
+          <div class="editable note" contenteditable="true" data-placeholder="可以补一句尾巴，比如：等你拆开的时候，我已经在你身边了。"></div>
+        </section>
+      </article>
+
+      <aside class="side-panel">
+        <section class="info-card">
+          <h2>怎么用</h2>
+          <ol>
+            <li>直接点正文区域输入文字。</li>
+            <li>用按钮上传照片，或者把图片拖进页面。</li>
+            <li>文本会自动保存在浏览器里，方便你反复修改。</li>
+          </ol>
+        </section>
+
+        <section class="info-card">
+          <h2>后面可以继续加</h2>
+          <ul>
+            <li>封面动效</li>
+            <li>信封打开动画</li>
+            <li>背景音乐</li>
+            <li>每封信单独页面</li>
+          </ul>
+        </section>
+
+        <section class="info-card muted">
+          <h2>部署提示</h2>
+          <p>
+            如果你要用 GitHub Pages，建议让仓库通过 GitHub Actions 直接发布 <code>3/page</code> 目录。
+          </p>
+        </section>
+      </aside>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite">已保存到浏览器草稿</div>
+
+  <script src="./app.js"></script>
+</body>
+</html>
