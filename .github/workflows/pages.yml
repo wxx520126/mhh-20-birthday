@@ -17,8 +17,30 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Prepare site
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          rm -rf site
+          mkdir -p site
+
+          for dir in */; do
+            name="${dir%/}"
+
+            case "$name" in
+              .git|.github|site)
+                continue
+                ;;
+            esac
+
+            if [ -f "$dir/index.html" ]; then
+              cp -R "$dir" "site/$name"
+            fi
+          done
+
       - name: Deploy to gh-pages branch
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./3
+          publish_dir: ./site
