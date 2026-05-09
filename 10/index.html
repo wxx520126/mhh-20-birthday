@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="一个可以决定今天吃什么的大转盘网页">
+  <title>今天吃什么大转盘</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <main class="app-shell">
+    <section class="hero">
+      <h1>不知道今天吃什么？潇潇帮你决定！</h1>
+      <p class="lede">宝宝晗可以在这里选择“吃的”、“水果”、“喝的”或“大餐”四个转盘</p>
+      <p class="lede">转到你不喜欢的东西？没关系，可以选择下面的“删掉并重转”</p>
+    </section>
+
+    <section class="layout">
+      <article class="wheel-panel panel">
+        <div class="category-switcher" id="categorySwitcher" role="tablist" aria-label="切换转盘"></div>
+
+        <div class="wheel-stage">
+          <div class="pointer" aria-hidden="true"></div>
+          <div class="wheel-frame">
+            <div class="wheel" id="wheel" aria-label="美食转盘">
+              <div class="wheel__labels" id="wheelLabels"></div>
+              <div class="wheel__rim"></div>
+              <div class="wheel__center">
+                <span id="wheelCategoryLabel">吃的</span>
+                <strong id="itemCount">0</strong>
+                <small id="wheelCategoryHint">道可选美食</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="wheel-controls">
+          <button class="primary-button" id="spinButton" type="button">开始转盘</button>
+          <button class="ghost-button" id="restoreCurrentButton" type="button">恢复当前示例</button>
+          <button class="ghost-button" id="restoreAllButton" type="button">恢复全部示例</button>
+        </div>
+
+        <p class="status" id="statusText" aria-live="polite">先添加一些美食，然后开始转盘。</p>
+        <div class="result-card">
+          <span class="result-label">本次抽中</span>
+          <strong id="resultText">还没有结果</strong>
+        </div>
+
+        <div class="content-block">
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow small">转盘内容</p>
+              <h2 id="activeCategoryTitle">吃的</h2>
+            </div>
+            <span class="counter" id="listCount">0 条</span>
+          </div>
+
+          <form class="add-form" id="addForm">
+            <input id="foodInput" name="food" type="text" placeholder="例如：手抓饼、烤冷面、炸酱面" autocomplete="off">
+            <button type="submit">添加</button>
+          </form>
+
+          <div class="chips" id="quickChips" aria-label="快速添加示例美食"></div>
+
+          <ul class="food-list" id="foodList"></ul>
+
+          <div class="panel-actions">
+            <button class="ghost-button" id="clearButton" type="button">清空当前转盘</button>
+            <button class="ghost-button" id="restoreButton" type="button">恢复当前默认</button>
+            <button class="ghost-button" id="restoreAllButton" type="button">恢复全部示例</button>
+          </div>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <div class="result-modal" id="resultModal" hidden>
+    <div class="result-modal__backdrop" data-modal-close></div>
+    <section class="result-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="resultModalTitle">
+      <button class="result-modal__close" type="button" id="resultModalClose" aria-label="关闭弹窗">×</button>
+      <p class="eyebrow small">本次抽中</p>
+      <h2 id="resultModalTitle">还没有结果</h2>
+      <p class="result-modal__review" id="resultModalReview">抽中结果后，这里会出现一句小评语。</p>
+      <p class="result-modal__note" id="resultModalNote">可以选择保留这个结果，也可以删掉并重转。</p>
+      <div class="result-modal__actions">
+        <button class="ghost-button" id="resultModalDiscardButton" type="button">不喜欢，删掉并重转</button>
+        <button class="primary-button" id="resultModalKeepButton" type="button">就选它</button>
+      </div>
+    </section>
+  </div>
+
+  <script src="./script.js"></script>
+</body>
+</html>
