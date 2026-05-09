@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="一个仿视频电话接通的生日礼物页面，接听后播放准备好的视频。">
+  <title>接听后的视频电话</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <main class="app-shell">
+    <section class="wechat-call" id="phoneFrame" aria-label="视频电话接听页面">
+      <section class="wechat-call__scene" id="videoScreen" aria-label="视频播放区域">
+        <video id="callVideo" playsinline preload="metadata" controls hidden></video>
+
+        <div class="video-placeholder" id="videoPlaceholder">
+          <div class="video-placeholder__ring" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+            <div class="profile-avatar profile-avatar--ghost">
+              <span>潇</span>
+            </div>
+          </div>
+          <p class="video-placeholder__name">潇潇</p>
+          <p class="video-placeholder__pill">他三天内的动态</p>
+          <p class="video-placeholder__text" id="placeholderText">你还没把视频做好也没关系，这个位置已经给它留好了。</p>
+          <p class="video-placeholder__hint" id="placeholderTitle">等待接听后播放视频</p>
+        </div>
+
+        <div class="video-overlay" id="videoOverlay" hidden>
+          <div class="video-chip">正在连接</div>
+          <p>视频正在准备播放，如果文件还没放进来，这里会先保持占位状态。</p>
+        </div>
+      </section>
+
+      <div class="wechat-call__chrome">
+        <header class="topbar" aria-label="顶部操作栏">
+          <button class="topbar-button" type="button" aria-label="返回上一页"></button>
+        </header>
+
+        <div class="call-badge" id="callBadge">视频通话</div>
+
+        <div class="profile-block">
+          <div class="profile-avatar">
+          </div>
+          <strong class="caller-name">恬恬</strong>
+          <p class="caller-label" id="callerLabel">视频通话邀请</p>
+          <p class="profile-pill">她三天内的动态</p>
+        </div>
+
+        <p class="call-status" id="statusText">正在接受邀请..</p>
+
+        <div class="feature-grid" aria-label="通话功能状态">
+          <button class="feature-button is-on" type="button" data-control="mic" data-on-label="麦克风已开" data-off-label="麦克风已关" aria-pressed="true">
+            <span class="feature-button__circle"><span class="control-icon control-icon--mic" aria-hidden="true"></span></span>
+            <span class="feature-button__label">麦克风已开</span>
+          </button>
+          <button class="feature-button is-on" type="button" data-control="speaker" data-on-label="扬声器已开" data-off-label="扬声器已关" aria-pressed="true">
+            <span class="feature-button__circle"><span class="control-icon control-icon--speaker" aria-hidden="true"></span></span>
+            <span class="feature-button__label">扬声器已开</span>
+          </button>
+          <button class="feature-button is-on" type="button" data-control="camera" data-on-label="摄像头已开" data-off-label="摄像头已关" aria-pressed="true">
+            <span class="feature-button__circle"><span class="control-icon control-icon--camera" aria-hidden="true"></span></span>
+            <span class="feature-button__label">摄像头已开</span>
+          </button>
+        </div>
+
+        <div class="action-row" aria-label="底部通话操作">
+          <button class="action-icon action-icon--preview" id="previewButton" type="button" aria-label="相册和预览"></button>
+
+          <button class="decline-button" id="rejectButton" type="button" aria-label="拒绝电话"></button>
+
+          <div class="call-actions" id="incomingActions">
+            <button class="answer-button" id="answerButton" type="button" aria-label="接听电话"></button>
+          </div>
+
+          <div class="call-actions is-connected" id="connectedActions" hidden>
+            <button class="hangup-button" id="hangupButton" type="button" aria-label="挂断电话"></button>
+          </div>
+
+          <button class="action-icon action-icon--switch" id="switchCameraButton" type="button" aria-label="切换摄像头"></button>
+        </div>
+
+        <p class="call-tip" id="callTip">背景使用 materials/background.jpg，视频放好后命名为 video.mp4 放到这个文件夹即可自动播放。</p>
+
+        <div class="video-meta is-hidden" aria-hidden="true">
+          <div>
+            <p class="meta-label">当前状态</p>
+            <strong id="metaState">未接听</strong>
+          </div>
+          <div>
+            <p class="meta-label">通话时长</p>
+            <strong id="callDuration">00:00</strong>
+          </div>
+          <div>
+            <p class="meta-label">视频源</p>
+            <strong id="videoSourceLabel">video.mp4</strong>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="./script.js"></script>
+</body>
+</html>
