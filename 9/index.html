@@ -369,6 +369,51 @@
       height: 8px;
     }
 
+    .closing-note {
+      margin-top: 10px;
+      padding: 18px 18px 20px;
+      border: 1px solid rgba(255, 232, 196, 0.14);
+      border-radius: 22px;
+      background:
+        radial-gradient(circle at top left, rgba(255, 246, 227, 0.13), transparent 38%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.03));
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 16px 30px rgba(0, 0, 0, 0.24);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+
+    .closing-note__label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      color: rgba(255, 224, 177, 0.9);
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 224, 177, 0.16);
+      font-size: 0.8rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    .closing-note__text {
+      margin: 0;
+      color: rgba(247, 239, 227, 0.88);
+      font-size: 0.98rem;
+      line-height: 1.9;
+      letter-spacing: 0.02em;
+    }
+
+    .closing-note__signature {
+      margin-top: 12px;
+      text-align: right;
+      font-family: "Caveat", cursive;
+      font-size: 1.18rem;
+      color: rgba(255, 216, 160, 0.9);
+      letter-spacing: 0.06em;
+    }
+
     @media (min-width: 680px) {
       .app {
         padding-inline: 18px;
@@ -438,8 +483,17 @@
 
 
     <section class="gallery" id="gallery" aria-label="照片展览"></section>
+    <section class="closing-note" aria-label="结语">
+      <div class="closing-note__label">结语</div>
+      <p class="closing-note__text">亲爱的晗，你不用为自己的一点小瑕疵而烦恼焦虑，这些记录下来的美丽瞬间，就像星星一样熠熠生辉，一点点的暗淡是不会遮盖星星的光芒的！你永远是最美丽的！</p>
+      <div class="closing-note__signature">From your curator</div>
+    </section>
     <div class="footer-space" aria-hidden="true"></div>
   </main>
+
+  <audio id="backgroundMusic" preload="auto" loop playsinline autoplay>
+    <source src="./music/M500004VR0Hn3bkqqE.mp3" type="audio/mpeg" />
+  </audio>
 
   <script>
     const heroConfig = {
@@ -509,6 +563,7 @@
     const gallery = document.getElementById("gallery");
     const title = document.getElementById("galleryTitle");
     const musicToggle = document.getElementById("musicToggle");
+    const backgroundMusic = document.getElementById("backgroundMusic");
 
     title.textContent = `《${heroConfig.babeName}的照片馆》`;
     document.title = `${heroConfig.babeName}的照片馆`;
@@ -557,144 +612,45 @@
       gallery.appendChild(fragment);
     }
 
-    const musicState = {
-      context: null,
-      master: null,
-      nodes: [],
-      fadeTimer: null
-    };
-
-    function buildAmbientMusic() {
-      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-      if (!AudioContextClass) {
-        return null;
-      }
-
-      const context = new AudioContextClass();
-      const master = context.createGain();
-      master.gain.value = 0.0001;
-      master.connect(context.destination);
-
-      const filter = context.createBiquadFilter();
-      filter.type = "lowpass";
-      filter.frequency.value = 980;
-      filter.Q.value = 0.65;
-
-      const padGain = context.createGain();
-      padGain.gain.value = 0.24;
-
-      const shimmerGain = context.createGain();
-      shimmerGain.gain.value = 0.05;
-
-      padGain.connect(filter);
-      shimmerGain.connect(filter);
-      filter.connect(master);
-
-      const tones = [
-        { freq: 196, detune: -6, gain: 0.18 },
-        { freq: 247, detune: 4, gain: 0.16 },
-        { freq: 392, detune: 9, gain: 0.08 }
-      ];
-
-      const nodes = tones.map((tone) => {
-        const oscillator = context.createOscillator();
-        oscillator.type = "sine";
-        oscillator.frequency.value = tone.freq;
-        oscillator.detune.value = tone.detune;
-
-        const gainNode = context.createGain();
-        gainNode.gain.value = tone.gain;
-
-        oscillator.connect(gainNode);
-        gainNode.connect(padGain);
-        oscillator.start();
-
-        return { oscillator, gainNode };
-      });
-
-      const sparkle = context.createOscillator();
-      sparkle.type = "triangle";
-      sparkle.frequency.value = 0.035;
-
-      const sparkleDepth = context.createGain();
-      sparkleDepth.gain.value = 0.018;
-      sparkle.connect(sparkleDepth);
-      sparkleDepth.connect(master.gain);
-      sparkle.start();
-
-      const flutter = context.createOscillator();
-      flutter.type = "sine";
-      flutter.frequency.value = 0.08;
-
-      const flutterDepth = context.createGain();
-      flutterDepth.gain.value = 0.012;
-      flutter.connect(flutterDepth);
-      flutterDepth.connect(padGain.gain);
-      flutter.start();
-
-      nodes.push({ oscillator: sparkle, gainNode: sparkleDepth });
-      nodes.push({ oscillator: flutter, gainNode: flutterDepth });
-
-      return { context, master, nodes };
-    }
-
     async function startMusic() {
-      if (!musicState.context) {
-        const built = buildAmbientMusic();
-        if (!built) {
-          return;
-        }
-
-        musicState.context = built.context;
-        musicState.master = built.master;
-        musicState.nodes = built.nodes;
+      if (!backgroundMusic) {
+        return;
       }
 
-      if (musicState.context.state === "suspended") {
-        await musicState.context.resume();
+      try {
+        backgroundMusic.currentTime = backgroundMusic.currentTime || 0;
+        await backgroundMusic.play();
+      } catch (error) {
+        console.warn("音乐播放失败", error);
+        return;
       }
 
-      if (musicState.fadeTimer) {
-        clearTimeout(musicState.fadeTimer);
-        musicState.fadeTimer = null;
-      }
-
-      const now = musicState.context.currentTime;
-      musicState.master.gain.cancelScheduledValues(now);
-      musicState.master.gain.setValueAtTime(Math.max(musicState.master.gain.value, 0.0001), now);
-      musicState.master.gain.linearRampToValueAtTime(0.045, now + 0.45);
       musicToggle.dataset.playing = "true";
       musicToggle.setAttribute("aria-pressed", "true");
       musicToggle.setAttribute("aria-label", "暂停背景音乐");
     }
 
-    function stopMusic() {
-      if (!musicState.context) {
+    async function tryAutoplayMusic() {
+      if (!backgroundMusic) {
         return;
       }
 
-      const now = musicState.context.currentTime;
-      musicState.master.gain.cancelScheduledValues(now);
-      musicState.master.gain.setValueAtTime(Math.max(musicState.master.gain.value, 0.0001), now);
-      musicState.master.gain.linearRampToValueAtTime(0.0001, now + 0.25);
+      try {
+        await startMusic();
+      } catch (error) {
+        console.warn("自动播放被浏览器拦截", error);
+        musicToggle.dataset.playing = "false";
+        musicToggle.setAttribute("aria-pressed", "false");
+        musicToggle.setAttribute("aria-label", "播放背景音乐");
+      }
+    }
 
-      musicState.fadeTimer = window.setTimeout(async () => {
-        try {
-          musicState.nodes.forEach((node) => {
-            if (node && node.oscillator && typeof node.oscillator.stop === "function") {
-              node.oscillator.stop();
-            }
-          });
-          await musicState.context.close();
-        } catch (error) {
-          console.warn("音乐关闭失败", error);
-        } finally {
-          musicState.context = null;
-          musicState.master = null;
-          musicState.nodes = [];
-          musicState.fadeTimer = null;
-        }
-      }, 320);
+    function stopMusic() {
+      if (!backgroundMusic) {
+        return;
+      }
+
+      backgroundMusic.pause();
 
       musicToggle.dataset.playing = "false";
       musicToggle.setAttribute("aria-pressed", "false");
@@ -715,6 +671,7 @@
     });
 
     renderGallery();
+    tryAutoplayMusic();
   </script>
 </body>
 </html>
