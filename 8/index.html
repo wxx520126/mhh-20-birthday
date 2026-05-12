@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>睡不着吗？听听我的声音吧</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="stars"></div>
+    <div class="twinkling"></div>
+
+    <div class="container">
+        <div class="moon"></div>
+        <h1>睡不着吗，宝宝？</h1>
+        <p class="message">闭上眼睛，听着我的声音，慢慢进入梦乡吧...</p>
+        
+        <div class="player-container">
+            <h2 id="track-title">第一段睡前故事</h2>
+            <audio id="audio-player" controls>
+                <!-- 这里替换成你的实际录音文件路径 -->
+                <source src="audio/story1.mp3" type="audio/mpeg">
+                你的浏览器不支持音频播放功能哦。
+            </audio>
+            <div class="controls">
+                <button id="prev-btn" class="control-btn">上一首</button>
+                <button id="next-btn" class="control-btn">下一首</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
