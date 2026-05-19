@@ -1,4 +1,9 @@
-const VIDEO_SRC = "./video.mp4";
+const VIDEO_SOURCES = [
+  "./materials/ca75bd89b538a6bd5ca3ad38e402845a_raw.mp4",
+  "./materials/edf431a0c66b6823099fe515a536b5ec_raw.mp4",
+  "./materials/0054ff64078e1d478f74e69f3205a987.mp4"
+];
+let currentVideoIndex = 0;
 
 const phoneFrame = document.getElementById("phoneFrame");
 const callVideo = document.getElementById("callVideo");
@@ -29,7 +34,7 @@ let connected = false;
 let sourceAttempted = false;
 let cameraFacing = "front";
 
-videoSourceLabel.textContent = VIDEO_SRC.replace("./", "");
+videoSourceLabel.textContent = VIDEO_SOURCES[currentVideoIndex].split('/').pop();
 
 function formatDuration(milliseconds) {
   const totalSeconds = Math.max(0, Math.floor(milliseconds / 1000));
@@ -81,7 +86,7 @@ async function loadAndPlayVideo() {
   videoOverlay.querySelector(".video-chip").textContent = "正在连接视频";
 
   try {
-    callVideo.src = VIDEO_SRC;
+    callVideo.src = VIDEO_SOURCES[currentVideoIndex];
     callVideo.hidden = false;
     videoPlaceholder.hidden = true;
     videoScreen.classList.add("is-playback-ready");
@@ -95,10 +100,10 @@ async function loadAndPlayVideo() {
     showPlaceholder();
     videoPlaceholder.hidden = false;
     setPlaybackMessage(
-      "视频还没准备好",
-      "你只要把视频命名为 video.mp4 放到 2 目录下，再点一次接听就能自动播放。"
+      "视频播放失败",
+      "请检查视频文件路径是否正确。"
     );
-    statusText.textContent = "还没有找到视频文件，页面已经搭好，等你把视频放进来。";
+    statusText.textContent = "还没有找到视频文件，请检查文件。";
     metaState.textContent = "等待视频";
     sourceAttempted = false;
   }
@@ -119,6 +124,8 @@ function resetCall() {
   connected = false;
   window.clearInterval(timerId);
   timerId = null;
+  currentVideoIndex = 0;
+  videoSourceLabel.textContent = VIDEO_SOURCES[currentVideoIndex].split('/').pop();
   callDuration.textContent = "00:00";
   statusText.textContent = "正在接受邀请..";
   callerLabel.textContent = "视频通话邀请";
@@ -128,6 +135,7 @@ function resetCall() {
   connectedActions.hidden = true;
   callTip.classList.remove("is-hidden");
   phoneFrame.classList.remove("is-connected-state");
+  phoneFrame.classList.remove("is-video-playing");
   sourceAttempted = false;
   showPlaceholder();
 }
@@ -137,10 +145,10 @@ rejectButton.addEventListener("click", resetCall);
 
 previewButton.addEventListener("click", () => {
   callBadge.textContent = "视频通话";
-  statusText.textContent = "这个页面已经准备好了，等你把视频放进来就能直接接听。";
+  statusText.textContent = "这个页面已经准备好播放视频了。";
   setPlaybackMessage(
     "先看一眼页面",
-    "页面会在你接听后切换到播放态。你也可以先把视频文件命名为 video.mp4 放进来。"
+    "点击接听即可连续播放你准备好的视频。"
   );
   videoOverlay.hidden = true;
   videoPlaceholder.hidden = true;
@@ -172,6 +180,7 @@ controlButtons.forEach((button) => {
 callVideo.addEventListener("play", () => {
   videoScreen.classList.add("is-playing");
   videoScreen.classList.remove("is-playback-ready");
+  phoneFrame.classList.add("is-video-playing");
   videoOverlay.hidden = true;
   metaState.textContent = "播放中";
   statusText.textContent = "视频正在播放。";
@@ -186,8 +195,17 @@ callVideo.addEventListener("pause", () => {
 });
 
 callVideo.addEventListener("ended", () => {
-  statusText.textContent = "视频播放结束了，你可以重新接听再看一遍。";
-  metaState.textContent = "已播放完";
+  if (currentVideoIndex < VIDEO_SOURCES.length - 1) {
+    currentVideoIndex++;
+    callVideo.src = VIDEO_SOURCES[currentVideoIndex];
+    videoSourceLabel.textContent = VIDEO_SOURCES[currentVideoIndex].split('/').pop();
+    callVideo.play().catch(console.error);
+  } else {
+    statusText.textContent = "视频播放结束了，你可以重新接听再看一遍。";
+    metaState.textContent = "已播放完";
+    phoneFrame.classList.remove("is-video-playing");
+    resetCall();
+  }
 });
 
 callBadge.textContent = "视频通话";
