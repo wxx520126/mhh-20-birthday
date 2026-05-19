@@ -135,6 +135,12 @@ video {
     18px
     calc(26px + env(safe-area-inset-bottom));
   text-align: center;
+  transition: opacity 0.5s ease;
+}
+
+.is-video-playing .wechat-call__chrome {
+  opacity: 0;
+  pointer-events: none;
 }
 
 .topbar {
